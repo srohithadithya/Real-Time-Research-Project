@@ -1,0 +1,24 @@
+# Virtual Environment
+venv/
+Code/mysite/venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+staticfiles/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Large files (optional, but good to note)
+# Car details.csv

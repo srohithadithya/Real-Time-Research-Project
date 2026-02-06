@@ -1,0 +1,458 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarPrice AI | Smart Selling Price Predictor</title>
+    <link rel="icon" type="image/jpeg" href="{% static 'polls/images/logo.jpg' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --accent: #10b981;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-darker);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 60px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 48px;
+            font-weight: 300;
+        }
+
+        .prediction-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .prediction-form {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group.full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .input-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-wrapper {
+            position: relative;
+        }
+
+        .field-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        input:focus+i,
+        select:focus~i {
+            color: var(--primary-light);
+        }
+
+        .submit-btn {
+            grid-column: span 2;
+            margin-top: 32px;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .submit-btn {
+                grid-column: span 1;
+            }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            margin-top: 48px;
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 24px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                scale: 0.95;
+            }
+
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        .result-label {
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .result-price {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .result-price span {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="{% static 'polls/images/logo.jpg' %}" alt="CarPrice AI Logo" class="logo-img">
+            <h1>CarPrice AI</h1>
+            <p class="subtitle">Precision AI-driven valuation for your vehicle</p>
+        </div>
+
+        <form method="post" action="" class="prediction-form">
+            {% csrf_token %}
+
+            <div class="input-group full-width">
+                <label><i class="fas fa-car"></i> Car Model Name</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input name="Name" type="text" placeholder="e.g. Maruti Suzuki Swift VXI" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-calendar-alt"></i> Manufacturing Year</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-clock"></i>
+                    <input name="year" type="number" placeholder="2024" min="1990" max="2025" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-road"></i> Distance Driven (km)</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <input name="km" type="number" placeholder="45000" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-gas-pump"></i> Fuel Type</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-filter"></i>
+                    <select name="fuel" required>
+                        <option value="" disabled selected>Select fuel type</option>
+                        <option value="1">Petrol</option>
+                        <option value="0">Diesel</option>
+                        <option value="-1">CNG / LPG</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-user-tag"></i> Seller Type</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-handshake"></i>
+                    <select name="dealer" required>
+                        <option value="" disabled selected>Select seller type</option>
+                        <option value="1">Individual</option>
+                        <option value="0">Dealer</option>
+                        <option value="-1">Trustmark Dealer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-cog"></i> Transmission</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-cogs"></i>
+                    <select name="trans" required>
+                        <option value="" disabled selected>Select transmission</option>
+                        <option value="1">Manual</option>
+                        <option value="0">Automatic</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-chair"></i> Seating Capacity</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-users"></i>
+                    <input name="seats" type="number" placeholder="5" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-bolt"></i> Max Power (bhp)</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-horse-head"></i>
+                    <input name="power" type="number" step="0.1" placeholder="90.5" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-history"></i> Ownership History</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-user-shield"></i>
+                    <select name="owner" required>
+                        <option value="" disabled selected>Select ownership</option>
+                        <option value="1">First Owner</option>
+                        <option value="2">Second Owner</option>
+                        <option value="3">Third Owner</option>
+                        <option value="4">Fourth & Above</option>
+                        <option value="5">Test Drive</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-tachometer-alt"></i> Torque (RPM)</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-redo"></i>
+                    <input name="rpm" type="number" placeholder="4000" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-leaf"></i> Mileage (kmpl)</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-gas-pump"></i>
+                    <input name="mil" type="number" step="0.01" placeholder="18.5" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-microchip"></i> Engine Capacity (cc)</label>
+                <div class="field-wrapper">
+                    <i class="fas fa-microchip"></i>
+                    <input name="eng" type="number" placeholder="1197" required>
+                </div>
+            </div>
+
+            <button type="submit" name="pred_button" class="submit-btn">
+                <span>Predict Market Value</span>
+                <i class="fas fa-wand-magic-sparkles"></i>
+            </button>
+        </form>
+
+        {% if response %}
+        <div class="result-card">
+            <div class="result-label">Estimated Resale Value</div>
+            <div class="result-price">
+                <span>₹</span>{{ response|floatformat:2 }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

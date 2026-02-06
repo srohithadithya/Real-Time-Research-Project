@@ -1,0 +1,24 @@
+Car Selling Price Prediction - Project Flow
+==========================================
+
+1. System Requirements:
+   - Python 3.12.0
+   - All modules listed in requirements.txt
+
+2. Environment Setup:
+   - Create a virtual environment: python -m venv venv
+   - Activate environment: .\venv\Scripts\activate (Windows)
+   - Install dependencies: pip install -r requirements.txt
+
+3. Model Training (Optional/Maintenance):
+   - Run: python train_model.py
+   - This script cleans the "Car details.csv" and saves "polls/CarSelling.pickle".
+
+4. Running the Web Application:
+   - Go to mysite directory.
+   - Run migrations: python manage.py migrate
+   - Start server: python manage.py runserver
+
+5. Access the UI:
+   - Open browser at http://127.0.0.1:8000/
+   - Enjoy the modern, redesigned interface!
