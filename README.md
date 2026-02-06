@@ -52,7 +52,6 @@ The AI considers 15+ complex parameters to determine value:
  ┃ ┣ 📜 Car details.csv       # Training Dataset
  ┃ ┣ 📜 train_model.py        # Automated Training Script
  ┃ ┗ 📜 car_selling_price.ipynb # Research & Exploration Notebook
- ┣ 📂 DOCUMENTATION.DOC/      # Research Reports & Case Studies
  ┣ 📜 run_app.bat             # One-click Master Launcher
  ┗ 📜 README.md               # Project Documentation
 ```
